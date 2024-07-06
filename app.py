@@ -1,14 +1,10 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask
 
 app = Flask(__name__)
-CORS(app)  # Permite requisições cross-origin (CORS)
 
-# Exemplo de rota para receber uma requisição GET
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    data = {'message': 'Hello from Flask!'}
-    return jsonify(data)
+@app.route('/')
+def index():
+    return 'Hello, World!'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -1,0 +1,6 @@
+services:
+  - name: web
+    env:
+      PYTHONUNBUFFERED: 1
+    command:
+      - gunicorn -b :$PORT app:app
