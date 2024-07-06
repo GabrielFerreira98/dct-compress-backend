@@ -79,7 +79,7 @@ def image_comparison(image1, image2):
 
 @app.route('/')
 def index():
-    return {'Hello, World!'}
+    return 'Hello, World!'
 
 @app.route('/calculate', methods=['POST'])
 def calculate_image():
