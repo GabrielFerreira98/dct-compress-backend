@@ -173,7 +173,7 @@ def calculate_image_dwt():
         # Operação de Compressão
 
         # Carregar a imagem
-        img = io.imread("lena.jpg", as_gray=True).astype(np.float32)
+        img = io.imread(image_path, as_gray=True).astype(np.float32)
 
         # Escolher uma base wavelet
         wavelet = 'db1'
