@@ -8,7 +8,6 @@ import numpy as np
 from skimage import io
 from skimage.metrics import structural_similarity as ssim
 import pywt
-import matplotlib.pyplot as plt
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
