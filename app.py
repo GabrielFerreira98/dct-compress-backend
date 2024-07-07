@@ -159,6 +159,7 @@ def get_metrics():
 def calculate_image_dwt():
     try:
         data = request.get_json()
+        amount_of_coeffs_percentage = data.get('amountOfCoeffsPercentage')
         image_path = data.get('image')
 
         if not image_path:
@@ -185,7 +186,7 @@ def calculate_image_dwt():
         all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
 
         # Determine a threshold to retain a certain percentage of the strongest coefficients
-        percent = 10  
+        percent = amount_of_coeffs_percentage  
         threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
 
         # Threshold the coefficients
@@ -210,6 +211,7 @@ def get_metrics_dwt():
     try:
         data = request.get_json()
         image_path = data.get('image')
+        amount_of_coeffs_percentage = data.get('amountOfCoeffsPercentage')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
@@ -235,7 +237,7 @@ def get_metrics_dwt():
         all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
 
         # Determine a threshold to retain a certain percentage of the strongest coefficients
-        percent = 10  
+        percent = amount_of_coeffs_percentage  
         threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
 
         # Threshold the coefficients
