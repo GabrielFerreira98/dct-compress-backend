@@ -205,6 +205,62 @@ def calculate_image_dwt():
         app.logger.error(f'Erro: {e}')
         return jsonify({'error': str(e)}), 500
     
+@app.route('/get_metrics_dwt', methods=['POST'])
+def get_metrics_dwt():
+    try:
+        data = request.get_json()
+        image_path = data.get('image')
+
+        if not image_path:
+            return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
+
+        # Carregar a imagem utilizando OpenCV
+        image = cv2.imread(image_path)
+
+        if image is None:
+            return jsonify({'error': 'Não foi possível carregar a imagem'}), 400
+
+        # Operação de Compressão
+
+        # Carregar a imagem
+        img = io.imread(image_path, as_gray=True).astype(np.float32)
+
+        # Escolher uma base wavelet
+        wavelet = 'db1'
+
+        # Decompor a imagem em níveis
+        coeffs = pywt.wavedec2(img, wavelet, level=2)
+
+        # Flatten and concatenate all the 2D coefficients
+        all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
+
+        # Determine a threshold to retain a certain percentage of the strongest coefficients
+        percent = 0.5  
+        threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
+
+        # Threshold the coefficients
+        coeffs_thresholded = [(pywt.threshold(c, threshold, mode='soft') if isinstance(c, np.ndarray) else c) 
+                            for c in coeffs]
+
+        # Reconstruct the compressed image
+        compressed_img = pywt.waverec2(coeffs_thresholded, 'db1')
+
+        # Calculo das Métricas
+        mse, ssim_value, psnr_value = image_comparison(img, compressed_img)
+        print(mse, ssim_value, psnr_value)
+
+        response = {
+            'mse': mse,
+            'ssim': ssim_value,
+            'psnr': psnr_value
+        }
+
+        return jsonify(response), 200
+    
+    except Exception as e:
+        app.logger.error(f'Erro: {e}')
+        return jsonify({'error': str(e)}), 500
+    
 # if __name__ == '__main__':
 #     app.run(debug=True,port=5000)
 
