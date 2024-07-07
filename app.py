@@ -159,8 +159,8 @@ def get_metrics():
 def calculate_image_dwt():
     try:
         data = request.get_json()
-        amount_of_coeffs_percentage = data.get('amountOfCoeffsPercentage')
         image_path = data.get('image')
+        amount_of_coeffs_percentage = data.get('percentage')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
@@ -211,7 +211,7 @@ def get_metrics_dwt():
     try:
         data = request.get_json()
         image_path = data.get('image')
-        amount_of_coeffs_percentage = data.get('amountOfCoeffsPercentage')
+        amount_of_coeffs_percentage = data.get('percentage')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
