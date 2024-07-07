@@ -156,7 +156,7 @@ def get_metrics():
 
     
 @app.route('/calculate_dwt', methods=['POST'])
-def calculate_image():
+def calculate_image_dwt():
     try:
         data = request.get_json()
         image_path = data.get('image')
