@@ -185,7 +185,7 @@ def calculate_image_dwt():
         all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
 
         # Determine a threshold to retain a certain percentage of the strongest coefficients
-        percent = 0.5  
+        percent = 10  
         threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
 
         # Threshold the coefficients
@@ -235,7 +235,7 @@ def get_metrics_dwt():
         all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
 
         # Determine a threshold to retain a certain percentage of the strongest coefficients
-        percent = 0.5  
+        percent = 10  
         threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
 
         # Threshold the coefficients
