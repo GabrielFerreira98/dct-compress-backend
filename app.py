@@ -160,7 +160,7 @@ def calculate_image_dwt():
     try:
         data = request.get_json()
         image_path = data.get('image')
-        amount_of_coeffs_percentage = data.get('percentage')
+        option = data.get('option')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
@@ -171,8 +171,6 @@ def calculate_image_dwt():
         if image is None:
             return jsonify({'error': 'Não foi possível carregar a imagem'}), 400
 
-        # Operação de Compressão
-
         # Carregar a imagem
         img = io.imread(image_path, as_gray=True).astype(np.float32)
 
@@ -180,21 +178,30 @@ def calculate_image_dwt():
         wavelet = 'db1'
 
         # Decompor a imagem em níveis
-        coeffs = pywt.wavedec2(img, wavelet, level=2)
+        coeffs = pywt.dwt2(img, wavelet)
 
-        # Flatten and concatenate all the 2D coefficients
-        all_coeffs = np.concatenate([c.ravel() for sublist in coeffs for c in sublist if isinstance(c, np.ndarray)])
+        # Definir sub-bandas
+        LL, (LH, HL, HH) = coeffs
 
-        # Determine a threshold to retain a certain percentage of the strongest coefficients
-        percent = amount_of_coeffs_percentage  
-        threshold = np.percentile(np.abs(all_coeffs), 100 - percent)
-
-        # Threshold the coefficients
-        coeffs_thresholded = [(pywt.threshold(c, threshold, mode='soft') if isinstance(c, np.ndarray) else c) 
-                            for c in coeffs]
-
-        # Reconstruct the compressed image
-        compressed_img = pywt.waverec2(coeffs_thresholded, 'db1')
+        def reconstruct_image(coeffs):
+            return pywt.idwt2(coeffs, wavelet)
+        
+        if option == 1:
+            compressed_img = reconstruct_image((LL, (None, None, None)))
+        elif option == 2:
+            compressed_img = reconstruct_image((None, (None, HL, None)))
+        elif option == 3:
+            compressed_img = reconstruct_image((None, (LH, None, None)))
+        elif option == 4:
+            compressed_img = reconstruct_image((None, (None, None, HH)))
+        elif option == 5:
+            compressed_img = reconstruct_image((LL, (None, HL, None)))
+        elif option == 6:
+            compressed_img = reconstruct_image((LL, (LH, None, None)))
+        elif option == 7:
+            compressed_img = reconstruct_image((LL, (None, None, HH)))
+        else:
+            compressed_img = reconstruct_image((LL, (LH, HL, HH)))
 
         # Salvar a imagem temporária para servir como resposta
         cv2.imwrite('compressed_image.jpg', compressed_img)
