@@ -161,6 +161,7 @@ def calculate_image_dwt():
         data = request.get_json()
         image_path = data.get('image')
         option = data.get('option')
+        level = data.get('level')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
@@ -177,31 +178,46 @@ def calculate_image_dwt():
         # Escolher uma base wavelet
         wavelet = 'db1'
 
-        # Decompor a imagem em níveis
-        coeffs = pywt.dwt2(img, wavelet)
-
-        # Definir sub-bandas
-        LL, (LH, HL, HH) = coeffs
-
         def reconstruct_image(coeffs):
             return pywt.idwt2(coeffs, wavelet)
         
-        if option == 1:
-            compressed_img = reconstruct_image((LL, (None, None, None)))
-        elif option == 2:
-            compressed_img = reconstruct_image((None, (None, HL, None)))
-        elif option == 3:
-            compressed_img = reconstruct_image((None, (LH, None, None)))
-        elif option == 4:
-            compressed_img = reconstruct_image((None, (None, None, HH)))
-        elif option == 5:
-            compressed_img = reconstruct_image((LL, (None, HL, None)))
-        elif option == 6:
-            compressed_img = reconstruct_image((LL, (LH, None, None)))
-        elif option == 7:
-            compressed_img = reconstruct_image((LL, (None, None, HH)))
-        else:
-            compressed_img = reconstruct_image((LL, (LH, HL, HH)))
+        if level == 1:
+            # Decompor a imagem em níveis
+            coeffs = pywt.dwt2(img, wavelet)
+
+            # Definir sub-bandas
+            LL, (LH, HL, HH) = coeffs
+            
+            if option == 1:
+                compressed_img = reconstruct_image((LL, (None, None, None)))
+            elif option == 2:
+                compressed_img = reconstruct_image((None, (None, HL, None)))
+            elif option == 3:
+                compressed_img = reconstruct_image((None, (LH, None, None)))
+            elif option == 4:
+                compressed_img = reconstruct_image((None, (None, None, HH)))
+            elif option == 5:
+                compressed_img = reconstruct_image((LL, (None, HL, None)))
+            elif option == 6:
+                compressed_img = reconstruct_image((LL, (LH, None, None)))
+            elif option == 7:
+                compressed_img = reconstruct_image((LL, (None, None, HH)))
+            else:
+                compressed_img = reconstruct_image((LL, (LH, HL, HH)))
+
+        else: 
+             # Decompor a imagem em níveis
+            coeffs = pywt.dwt2(img, wavelet)
+
+            # Definir sub-bandas
+            LL2, (LH2, HL2, HH2), (LH1, HL1, HH1) = coeffs
+
+            if option == 9:
+                compressed_img = reconstruct_image((LL2, (None, None, None), (None, None, None)))
+            elif option == 10:
+                compressed_img = reconstruct_image((LL2, (LH2, HL2, HH2), (None, None, None)))
+            else:
+                compressed_img = reconstruct_image((LL2, (LH2, HL2, HH2), (LH1, HL1, HH1)))
 
         # Salvar a imagem temporária para servir como resposta
         cv2.imwrite('compressed_image.jpg', compressed_img)
@@ -219,6 +235,7 @@ def get_metrics_dwt():
         data = request.get_json()
         image_path = data.get('image')
         option = data.get('option')
+        level = data.get('level')
 
         if not image_path:
             return jsonify({'error': 'Caminho da imagem não encontrado'}), 400
@@ -237,31 +254,46 @@ def get_metrics_dwt():
         # Escolher uma base wavelet
         wavelet = 'db1'
 
-        # Decompor a imagem em níveis
-        coeffs = pywt.dwt2(img, wavelet)
-
-        # Definir sub-bandas
-        LL, (LH, HL, HH) = coeffs
-
         def reconstruct_image(coeffs):
             return pywt.idwt2(coeffs, wavelet)
         
-        if option == 1:
-            compressed_img = reconstruct_image((LL, (None, None, None)))
-        elif option == 2:
-            compressed_img = reconstruct_image((None, (None, HL, None)))
-        elif option == 3:
-            compressed_img = reconstruct_image((None, (LH, None, None)))
-        elif option == 4:
-            compressed_img = reconstruct_image((None, (None, None, HH)))
-        elif option == 5:
-            compressed_img = reconstruct_image((LL, (None, HL, None)))
-        elif option == 6:
-            compressed_img = reconstruct_image((LL, (LH, None, None)))
-        elif option == 7:
-            compressed_img = reconstruct_image((LL, (None, None, HH)))
-        else:
-            compressed_img = reconstruct_image((LL, (LH, HL, HH)))
+        if level == 1:
+            # Decompor a imagem em níveis
+            coeffs = pywt.dwt2(img, wavelet)
+
+            # Definir sub-bandas
+            LL, (LH, HL, HH) = coeffs
+            
+            if option == 1:
+                compressed_img = reconstruct_image((LL, (None, None, None)))
+            elif option == 2:
+                compressed_img = reconstruct_image((None, (None, HL, None)))
+            elif option == 3:
+                compressed_img = reconstruct_image((None, (LH, None, None)))
+            elif option == 4:
+                compressed_img = reconstruct_image((None, (None, None, HH)))
+            elif option == 5:
+                compressed_img = reconstruct_image((LL, (None, HL, None)))
+            elif option == 6:
+                compressed_img = reconstruct_image((LL, (LH, None, None)))
+            elif option == 7:
+                compressed_img = reconstruct_image((LL, (None, None, HH)))
+            else:
+                compressed_img = reconstruct_image((LL, (LH, HL, HH)))
+
+        else: 
+             # Decompor a imagem em níveis
+            coeffs = pywt.dwt2(img, wavelet)
+
+            # Definir sub-bandas
+            LL2, (LH2, HL2, HH2), (LH1, HL1, HH1) = coeffs
+
+            if option == 9:
+                compressed_img = reconstruct_image((LL2, (None, None, None), (None, None, None)))
+            elif option == 10:
+                compressed_img = reconstruct_image((LL2, (LH2, HL2, HH2), (None, None, None)))
+            else:
+                compressed_img = reconstruct_image((LL2, (LH2, HL2, HH2), (LH1, HL1, HH1)))
 
         # Calculo das Métricas
         mse, ssim_value, psnr_value = image_comparison(img, compressed_img)
