@@ -207,7 +207,7 @@ def calculate_image_dwt():
 
         else: 
              # Decompor a imagem em níveis
-            coeffs = pywt.dwt2(img, wavelet)
+            coeffs = pywt.dwt2(img, wavelet, level=2)
 
             # Definir sub-bandas
             LL2, (LH2, HL2, HH2), (LH1, HL1, HH1) = coeffs
@@ -283,7 +283,7 @@ def get_metrics_dwt():
 
         else: 
              # Decompor a imagem em níveis
-            coeffs = pywt.dwt2(img, wavelet)
+            coeffs = pywt.dwt2(img, wavelet, level=2)
 
             # Definir sub-bandas
             LL2, (LH2, HL2, HH2), (LH1, HL1, HH1) = coeffs
